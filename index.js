@@ -6,8 +6,6 @@ const ObjectId = require('mongodb').ObjectId;
 require('dotenv').config();
 const cors = require('cors');
 
-// const admin = require("firebase-admin");
-
 
 
 
@@ -17,25 +15,6 @@ app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.a6jam.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
-// var serviceAccount = require('./car-sales-auth-f7b5f-firebase-adminsdk-9i5eo-7a43c811e0.json');
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount)
-// });
-
-// async function verifyToken(req, res, next) {
-//   if (req?.headers?.authorization.startsWith('Bearer ')) {
-//       const token = req.headers.authorization.split(' ')[1];
-//       try {
-//           const decodedUser = await admin.auth().verifyIdToken(token);
-//           req.decodedEmail = decodedUser.email;
-//       }
-//       catch {
-
-//       }
-//   }
-//   next();
-// }
 
 async function run() {
     try {
