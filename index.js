@@ -66,6 +66,7 @@ async function run() {
         const query = {email: userEmail};
         const cursor = ordersCollection.find(query);
         const orders = await cursor.toArray();
+        console.log('orderssss', userEmail, orders)
         res.send(orders);
       })
       
@@ -169,7 +170,7 @@ async function run() {
   }
   run().catch(console.dir);
 app.get('/', (req, res) => {
-  res.send('Hello World!@@@@@')
+  res.send('Hello World!')
 })
 
 app.listen(port, () => {
