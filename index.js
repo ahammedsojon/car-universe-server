@@ -6,7 +6,7 @@ const ObjectId = require('mongodb').ObjectId;
 require('dotenv').config();
 const cors = require('cors');
 
-const admin = require("firebase-admin");
+// const admin = require("firebase-admin");
 
 
 
@@ -18,24 +18,24 @@ app.use(express.json());
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.a6jam.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-var serviceAccount = require('./car-sales-auth-f7b5f-firebase-adminsdk-9i5eo-7a43c811e0.json');
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+// var serviceAccount = require('./car-sales-auth-f7b5f-firebase-adminsdk-9i5eo-7a43c811e0.json');
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount)
+// });
 
-async function verifyToken(req, res, next) {
-  if (req?.headers?.authorization.startsWith('Bearer ')) {
-      const token = req.headers.authorization.split(' ')[1];
-      try {
-          const decodedUser = await admin.auth().verifyIdToken(token);
-          req.decodedEmail = decodedUser.email;
-      }
-      catch {
+// async function verifyToken(req, res, next) {
+//   if (req?.headers?.authorization.startsWith('Bearer ')) {
+//       const token = req.headers.authorization.split(' ')[1];
+//       try {
+//           const decodedUser = await admin.auth().verifyIdToken(token);
+//           req.decodedEmail = decodedUser.email;
+//       }
+//       catch {
 
-      }
-  }
-  next();
-}
+//       }
+//   }
+//   next();
+// }
 
 async function run() {
     try {
@@ -47,14 +47,14 @@ async function run() {
       const reviewsCollection = database.collection("reviews");
        
       // show cars in ui
-      app.get('/cars', verifyToken, async (req, res)=>{
+      app.get('/cars',  async (req, res)=>{
         const crusor = carsCollection.find({});
         const result = await crusor.toArray();
         res.send(result);
       })
 
        // get car details based on orderId
-       app.get('/cars/car', verifyToken, async (req, res)=>{
+       app.get('/cars/car',  async (req, res)=>{
         const orderId = req.query.orderId;
         const query = {_id: ObjectId(orderId)};
         const order = await carsCollection.findOne(query);
@@ -62,7 +62,7 @@ async function run() {
       })
 
        // get specific car for purchase
-       app.get('/cars/:carId', verifyToken, async (req, res)=>{
+       app.get('/cars/:carId',  async (req, res)=>{
         const carId = req.params.carId;
         const query = { _id: ObjectId(carId) };
         const car = await carsCollection.findOne(query);
@@ -70,7 +70,7 @@ async function run() {
       })
 
       // get users for check is admin or not
-      app.get('/users/:email', verifyToken, async (req, res)=>{
+      app.get('/users/:email',  async (req, res)=>{
         const userEmail = req.params.email;
         const query = { email: userEmail };
         const user = await usersCollection.findOne(query);
@@ -82,7 +82,7 @@ async function run() {
       })
 
       // get orders from database based on user email
-      app.get('/orders/:email', verifyToken, async (req,res)=>{
+      app.get('/orders/:email',  async (req,res)=>{
         const userEmail = req.params.email;
         const query = {email: userEmail};
         const cursor = ordersCollection.find(query);
@@ -91,14 +91,14 @@ async function run() {
       })
       
       // get all orders from database
-      app.get('/orders', verifyToken, async (req,res)=>{
+      app.get('/orders',  async (req,res)=>{
         const cursor = ordersCollection.find({});
         const orders = await cursor.toArray();
         res.send(orders);
       })
 
      // get all reviews from database
-     app.get('/reviews', verifyToken, async (req, res)=>{
+     app.get('/reviews',  async (req, res)=>{
       const cursor = reviewsCollection.find({});
       const reviews = await cursor.toArray();
       res.send(reviews);
@@ -106,7 +106,7 @@ async function run() {
       
 
       // save users to database
-      app.post('/users', verifyToken, async (req,res)=>{
+      app.post('/users',  async (req,res)=>{
           const user = req.body.user;
           const doc = user;
           const result = await usersCollection.insertOne(doc); 
@@ -114,14 +114,14 @@ async function run() {
       })
 
       // save a order to databse
-      app.post('/orders', verifyToken, async (req, res)=>{
+      app.post('/orders',  async (req, res)=>{
         const order = req.body.bookingOrder;
         const result = await ordersCollection.insertOne(order);
         res.send(result)
       })
 
         // save users to database
-      app.post('/cars', verifyToken, async (req,res)=>{
+      app.post('/cars',  async (req,res)=>{
           const car = req.body.product;
           const doc = car;
           const result = await carsCollection.insertOne(doc); 
@@ -143,7 +143,7 @@ async function run() {
       })
       
       // update order status
-      app.put('/orders/:id', verifyToken, async (req, res)=>{
+      app.put('/orders/:id',  async (req, res)=>{
           const id = req.params.id;
           const filter = {_id: ObjectId(id)};
           const updateDoc = {
@@ -157,7 +157,7 @@ async function run() {
       })
 
       // set or update review to database
-      app.put('/reviews/:email', verifyToken, async (req, res)=>{
+      app.put('/reviews/:email',  async (req, res)=>{
         const email = req.params.email;
         const review = req.body.review;
         const filter = { email: email};
@@ -169,14 +169,14 @@ async function run() {
       })
 
       // delete specific order from database
-      app.delete('/orders/:id', verifyToken, async (req, res)=>{
+      app.delete('/orders/:id',  async (req, res)=>{
         const id = req.params.id;
         const query = {_id: ObjectId(id)};
         const result = await ordersCollection.deleteOne(query);
         res.send(result)
       })
       // delete product
-      app.delete('/cars/:id', verifyToken, async (req, res)=>{
+      app.delete('/cars/:id',  async (req, res)=>{
         const id = req.params.id;
         const query = {_id: ObjectId(id)};
         const result = await carsCollection.deleteOne(query);
